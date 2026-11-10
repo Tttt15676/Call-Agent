@@ -1,0 +1,10 @@
+[
+  {
+    "phone": "+15551234567",
+    "managerName": "Sarah Connor"
+  },
+  {
+    "phone": "+15559876543",
+    "managerName": "Marcus Wright"
+  }
+]
