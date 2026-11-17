@@ -1,0 +1,38 @@
+name: Run AI Outbound Call Agent
+
+on:
+  # Allows you to click "Run workflow" manually inside the GitHub Actions tab
+  workflow_dispatch:
+
+  # Runs automatically Monday–Friday at 15:00 UTC (adjust to your target time zone)
+  schedule:
+    - cron: '0 15 * * 1-5'
+
+jobs:
+  trigger-calls:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Download your repository code onto the GitHub runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Install Node.js 20+ (matches the native ES modules in your script)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Install dependencies if you have a package.json file
+      - name: Install dependencies
+        run: npm ci || true
+
+      # 4. Run your outbound dialer script using your encrypted Repository Secrets
+      - name: Start outbound call batch
+        env:
+          VAPI_API_KEY: ${{ secrets.VAPI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VAPI_PHONE_NUMBER_ID: ${{ secrets.VAPI_PHONE_NUMBER_ID }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          TRANSFER_PHONE_NUMBER: ${{ secrets.TRANSFER_PHONE_NUMBER }}
+        run: node dialer.js
